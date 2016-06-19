@@ -34,10 +34,12 @@ public class GridViewAdapter extends BaseAdapter {
         assetManager = context.getAssets();
         View view;
         if(convertView == null){
-            view = layoutInflater.inflate(R.layout.activity_main, null);
+            view = layoutInflater.inflate(R.layout.grid_item, null);
         }else{
             view = convertView;
         }
+        System.out.println("==================view找到了"+ view);
+
         try{
             String dirPath = "image";
             String picName = null;
