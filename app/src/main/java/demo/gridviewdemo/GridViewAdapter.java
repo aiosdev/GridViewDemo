@@ -12,6 +12,8 @@ import android.widget.ImageView;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,12 +22,12 @@ import java.util.Map;
  */
 public class GridViewAdapter extends BaseAdapter {
     private Context context;
-    private List<Map<String, Object>> rs;
+    private List<Map<String, Object>> picList;
     LayoutInflater layoutInflater;
     AssetManager assetManager = null;
-    public GridViewAdapter (Context context, List<Map<String, Object>> rs){
+    public GridViewAdapter (Context context, List<Map<String, Object>> picList){
         this.context = context;
-        this.rs = rs;
+        this.picList = picList;
         layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
@@ -34,44 +36,62 @@ public class GridViewAdapter extends BaseAdapter {
         assetManager = context.getAssets();
         View view;
         if(convertView == null){
-            view = layoutInflater.inflate(R.layout.activity_main, null);
+            view = layoutInflater.inflate(R.layout.grid_item, null);
         }else{
             view = convertView;
         }
+        picList = new ArrayList<>();
+        String [] pic = null;
+        String dirPath = "image";
+        String picName = null;
         try{
-            String dirPath = "image";
-            String picName = null;
-            String [] pic = assetManager.list(dirPath);
-            for(int i=0; i< pic.length; i++){
-                picName = pic[i];
-                InputStream is = assetManager.open(dirPath+"/"+picName);
-                System.out.println("++++++++++++++图片名字"+is);
-                Bitmap bitmap = BitmapFactory.decodeStream(is);
-                System.out.println("==================bitmap找到了"+ bitmap);
-                ImageView imageView = (ImageView) view.findViewById(R.id.image_view_item);
-                System.out.println("~~~~~~~~~~~~~~~~~~imageview找到"+ imageView);
-                imageView.setImageBitmap(bitmap);
-                is.close();
-                System.out.println("-------------------图片名字"+ picName);
-
-            }
-
+            pic = assetManager.list(dirPath);
         }
         catch (IOException e) {
             e.printStackTrace();
         }
+        for(int i=0; i< pic.length; i++){
+            picName = pic[i];
+            InputStream is = null;
+            try {
+                is = context.getAssets().open(dirPath+"/"+picName);
+                System.out.println("++++++++++++++图片名字"+is);
+                Bitmap bitmap = BitmapFactory.decodeStream(is);
+                System.out.println("==================bitmap找到了"+ bitmap);
+                Map<String, Object> map = new HashMap<String, Object>();
+                map.put("name", pic[i]);
+                map.put("bitmap", bitmap);
+                map.put("id", i);
+                picList.add(map);
+                System.out.println("----------++++++++++-------map是"+ map);
+                ImageView imageView = (ImageView) view.findViewById(R.id.image_view_item);
+                System.out.println("~~~~~~~~~~~~~~~~~~imageview找到"+ imageView);
+                imageView.setImageBitmap(bitmap);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }finally {
 
+                    if(is !=null){
+                        try {
+                            is.close();
+                        }catch (IOException e){
+                            e.printStackTrace();
+                        }
+                    }
+            }
+//            System.out.println("-------------------图片名字"+ picName);
+        }
         return view;
     }
 
     @Override
     public int getCount() {
-        return 4;
+        return picList.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return rs.get(position);
+        return picList.get(position);
     }
 
     @Override
