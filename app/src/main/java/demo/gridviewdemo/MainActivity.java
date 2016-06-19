@@ -17,7 +17,7 @@ public class MainActivity extends AppCompatActivity {
 
         GridView gridView = (GridView) findViewById(R.id.grid_view);
         assert gridView != null;
-        GridViewAdapter gridViewAdapter = new GridViewAdapter(this,picList);
+        GridViewAdapter gridViewAdapter = new GridViewAdapter(this, R.layout.grid_item, picList);
         System.out.println("!!!!!!!!!!!!!!!!!!!!!!!listPAth"+ picList);
         gridView.setAdapter(gridViewAdapter);
     }

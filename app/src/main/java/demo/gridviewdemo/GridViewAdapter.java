@@ -23,12 +23,14 @@ import java.util.Map;
 public class GridViewAdapter extends BaseAdapter {
     private Context context;
     private List<Map<String, Object>> picList;
+    int layoutResourceId;
     LayoutInflater layoutInflater;
     AssetManager assetManager = null;
-    public GridViewAdapter (Context context, List<Map<String, Object>> picList){
+    public GridViewAdapter (Context context, int layoutResourceId,List<Map<String, Object>> picList){
         this.context = context;
         this.picList = picList;
         layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.layoutResourceId = layoutResourceId;
     }
 
     @Override
@@ -86,7 +88,7 @@ public class GridViewAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return picList.size();
+        return 4;
     }
 
     @Override
@@ -96,7 +98,7 @@ public class GridViewAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        return 0;
+        return position;
     }
 
 
