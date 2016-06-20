@@ -13,95 +13,82 @@ import android.widget.ImageView;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.Arrays;
 
 /**
  * Created by guoecho on 2016/6/17.
  */
 public class GridViewAdapter extends BaseAdapter {
     private Context context;
-    private List<Map<String, Object>> picList;
-    int layoutResourceId;
+    private ArrayList<String> list;
     LayoutInflater layoutInflater;
     AssetManager assetManager = null;
-    public GridViewAdapter (Context context, int layoutResourceId,List<Map<String, Object>> picList){
+    View view;
+
+
+    public GridViewAdapter (Context context, ArrayList<String> list){
         this.context = context;
-        this.picList = picList;
+        this.list = list;
         layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        this.layoutResourceId = layoutResourceId;
+        assetManager = context.getAssets();
+
+        String [] pic = null;
+        try {
+            pic = assetManager.list("image");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        for(int i=0; i< pic.length; i++){
+            InputStream is = null;
+            try {
+                is = context.getAssets().open("image/"+ pic[i]);
+                System.out.println("###############图片名字找到"+ pic[i]);
+                Bitmap bitmap = BitmapFactory.decodeStream(is);
+                System.out.println("==================bitmap找到了"+ bitmap);
+                ImageView imageView = (ImageView) view.findViewById(R.id.image_view_item);
+                System.out.println("~~~~~~~~~~~~~~~~~~imageview找到"+ imageView);
+                imageView.setImageBitmap(bitmap);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                is.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        list = (ArrayList<String>) Arrays.asList(pic);
+        System.out.println("######@@@@@@@@@@@@list是" + list);
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        assetManager = context.getAssets();
-        View view;
         if(convertView == null){
             view = layoutInflater.inflate(R.layout.grid_item, null);
         }else{
             view = convertView;
         }
-        picList = new ArrayList<>();
-        String [] pic = null;
-        String dirPath = "image";
-        String picName = null;
-        try{
-            pic = assetManager.list(dirPath);
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-        for(int i=0; i< pic.length; i++){
-            picName = pic[i];
-            InputStream is = null;
-            try {
-                is = context.getAssets().open(dirPath+"/"+picName);
-                System.out.println("++++++++++++++图片名字"+is);
-                Bitmap bitmap = BitmapFactory.decodeStream(is);
-                System.out.println("==================bitmap找到了"+ bitmap);
-                Map<String, Object> map = new HashMap<String, Object>();
-                map.put("name", pic[i]);
-                map.put("bitmap", bitmap);
-                map.put("id", i);
-                picList.add(map);
-                System.out.println("----------++++++++++-------map是"+ map);
-                ImageView imageView = (ImageView) view.findViewById(R.id.image_view_item);
-                System.out.println("~~~~~~~~~~~~~~~~~~imageview找到"+ imageView);
-                imageView.setImageBitmap(bitmap);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }finally {
 
-                    if(is !=null){
-                        try {
-                            is.close();
-                        }catch (IOException e){
-                            e.printStackTrace();
-                        }
-                    }
-            }
-//            System.out.println("-------------------图片名字"+ picName);
-        }
         return view;
     }
 
     @Override
     public int getCount() {
-        return 4;
+        return list.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return picList.get(position);
+        return position;
     }
 
     @Override
     public long getItemId(int position) {
         return position;
     }
-
-
 
 }
 

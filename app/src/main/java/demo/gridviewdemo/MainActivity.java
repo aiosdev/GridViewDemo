@@ -4,11 +4,11 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.GridView;
 
-import java.util.List;
-import java.util.Map;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-    private List<Map<String, Object>> picList;
+    private ArrayList<String> list;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,8 +17,8 @@ public class MainActivity extends AppCompatActivity {
 
         GridView gridView = (GridView) findViewById(R.id.grid_view);
         assert gridView != null;
-        GridViewAdapter gridViewAdapter = new GridViewAdapter(this, R.layout.grid_item, picList);
-        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!listPAth"+ picList);
+        GridViewAdapter gridViewAdapter = new GridViewAdapter(this, null);
+        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!listPAth"+ list);
         gridView.setAdapter(gridViewAdapter);
     }
 }
