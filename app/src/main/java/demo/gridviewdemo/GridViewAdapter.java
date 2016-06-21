@@ -14,32 +14,28 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by guoecho on 2016/6/17.
  */
 public class GridViewAdapter extends BaseAdapter {
     private Context context;
-    private ArrayList<String> list;
+    private List<String> list;
     LayoutInflater layoutInflater;
-    AssetManager assetManager = null;
+
     View view;
 
 
-    public GridViewAdapter (Context context, ArrayList<String> list){
+    public GridViewAdapter (Context context, List<String> list){
         this.context = context;
         this.list = list;
         layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        assetManager = context.getAssets();
-
-        String [] pic = null;
-        try {
-            pic = assetManager.list("image");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
 
+
+
+        /*
         for(int i=0; i< pic.length; i++){
             InputStream is = null;
             try {
@@ -62,6 +58,7 @@ public class GridViewAdapter extends BaseAdapter {
         }
         list = (ArrayList<String>) Arrays.asList(pic);
         System.out.println("######@@@@@@@@@@@@list是" + list);
+        */
     }
 
     @Override
@@ -70,6 +67,26 @@ public class GridViewAdapter extends BaseAdapter {
             view = layoutInflater.inflate(R.layout.grid_item, null);
         }else{
             view = convertView;
+        }
+        AssetManager assetManager = context.getAssets();
+
+        try{
+            String dirPath = "image";
+            String picName = null;
+            //String [] pic = assetManager.list(dirPath);
+                picName = list.get(position);
+                InputStream is = assetManager.open(dirPath+"/"+picName);
+                System.out.println("++++++++++++++图片名字"+is);
+                Bitmap bitmap = BitmapFactory.decodeStream(is);
+                System.out.println("==================bitmap找到了"+ bitmap);
+                ImageView imageView = (ImageView) view.findViewById(R.id.image_view_item);
+                System.out.println("~~~~~~~~~~~~~~~~~~imageview找到"+ imageView);
+                imageView.setImageBitmap(bitmap);
+                is.close();
+                System.out.println("-------------------图片名字"+ picName);
+        }
+        catch (IOException e) {
+            e.printStackTrace();
         }
 
         return view;
